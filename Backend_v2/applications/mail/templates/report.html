@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="Blog Report">
+    <title>Reports</title>
+    <style type="text/css">
+        @page{
+            @bottom-left{
+                background: #82b965;
+                content: counter(page);
+                display: block;
+                height: 1cm;
+                text-align: center;
+                width:100%;
+            }
+        }
+        @page: first {
+            @top-left {
+                content: "Bloglite Report";
+                font-size: 20px;
+                font-weight: bold;
+                display: block;
+                height: 1cm;
+                text-align: center;
+                background: #82b965;
+                width:100%;
+            }
+        }
+        table, th, td {
+            border: 1px solid black;
+            text-align: center;
+            }
+    </style>
+</head>
+
+<body>
+    <br>
+    <h3>Hi {{data["name"]}}!</h3>
+    <article id="content">
+        <p>Here is your monthly report.</p><br>
+        <p>Your Followers: {{data["number_of_follower"]}}</p>
+        <p>You are Following: {{data["number_of_followings"]}}</p>
+        {% if data["blog_details"]|length == 0 %}
+            <p>You Have not created any blog in last month. Please visit our side and create some blogs!</p>    
+        {% endif %}
+    
+        {% if data["blog_details"]|length > 0 %}
+
+        <table>
+            <thead>
+                <tr>
+                    <th>Blog Tilte</th>
+                    <th>Date of Creation</th>
+                    <th>Number of Comments</th>
+                    <th>Number of Likes</th>
+                    <th>Number of Dislikes</th>
+
+                </tr>
+            </thead>
+            <tbody>
+                {% for blog_data in data["blog_details"] %}
+                    <tr>
+                        <td>{{blog_data["blogTitle"]}}</td>
+                        <td>{{blog_data["blogCreation"]}}</td>
+                        <td>{{blog_data["number_of_comments"]}}</td>
+                        <td>{{blog_data["likes"]}}</td>
+                        <td>{{blog_data["dislikes"]}}</td>
+                    </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+
+    </article>
+
+
+    
+    {% endif %}
+    <br><br><br><br>
+    <p> Thank you for using bloglite!</p>
+    <p style="color:blue">Thanks & Regards</p>
+    <p style="color:blue">Bloglite Team</p>
+
+</body>
+</html>

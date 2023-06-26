@@ -1,0 +1,1036 @@
+# This is a sample OpenAPI 3.0.3 specification.
+# It is used to test the OpenAPI 3.0.3 parser.
+
+openapi: '3.0.3'
+info:
+  title: Bloglite API
+  version: '1.0'
+servers:
+  - url: http://127.0.0.1:5000
+    description: Local server
+security:
+  - bearerAuth: []
+
+
+tags:
+  - name: User
+    description: Operations on users
+  - name: Blogs
+    description: Operations on Blogs
+  - name: Comments
+    description: Operations on comments
+  - name: Relations
+    description: Operations on relations
+  - name: Feeds
+    description: Get all the feeds
+
+paths:
+  /bloglite/login:
+    post:
+      tags:
+        - User
+      summary: Login user
+      description: Login a user with a username and password to get a access token
+      operationId: login
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                username:
+                  type: string
+                  example: user123
+                password:
+                  type: string
+                  format: password
+                  example: password@123
+      responses:
+
+        '200':
+          description: Successful operation
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: "Login successful"
+                  access_token:
+                    type: string
+                    example: "eyJhbGciOiafldjflajf"
+
+        '401':
+          description: Invalid username/password supplied
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+                    example: "Invalid password"
+        '404':
+          description: User not found
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+                    example: "User not found"
+  /bloglite/user:
+    get:
+      tags:
+        - User
+      summary: User data
+      description: get all the user data
+      operationId: user Data
+      security:
+        - bearerAuth: []
+      responses: 
+        '200':
+          description: Successful operation
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/User'
+        '404':
+          description: User not found
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+                    example: "User not found"
+  /bloglite/registration:
+    post:
+      tags:
+        - User
+      summary: Create user
+      description: Create a new user
+      operationId: new user
+      requestBody: 
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                name:
+                  type: string
+                  example: Random Person
+                username:
+                  type: string
+                  example: user123
+                password:
+                  type: string
+                  format: password
+                  example: password@123
+      responses:
+        '201':
+          description:
+            Successful operation
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: "User Created successfully"
+        
+        '400':
+          description: User already exists
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+                    example: "user already exists"
+                  
+  /bloglite/password_update:
+    put:
+      tags:
+        - User
+      summary: Update password
+      description: Create a new password
+      operationId: new password
+
+                
+      security:
+        - bearerAuth: []
+      requestBody: 
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                old_password:
+                  type: string
+                  format: password
+                  example: Password@123
+                new_password:
+                  type: string
+                  format: password
+                  example: Password@123
+      responses:
+        '200':
+          description:
+            Successful operation
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: "Password Updated Successfully"
+        
+        '400':
+          description: Inavlid Password
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+                    example: "Invalid Password"
+
+  /bloglite/deleteuser:
+    delete:
+      tags:
+        - User
+      summary: Delete your profile
+      description: It will erase your profile
+      operationId: Delete user
+
+                
+      security:
+        - bearerAuth: []
+
+      responses:
+        '200':
+          description:
+            Successful operation
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: "User deleted successfully"
+        
+        '400':
+          description: Something went wrong
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+                    example: "Something went worng"
+
+
+# Feeds
+  /bloglite/feed:
+    get:
+      tags:
+        - Feeds
+      summary: Blogs data
+      description: get all the Blogs data
+      operationId: feeds 
+      security:
+        - bearerAuth: []
+      responses: 
+        '200':
+          description: Successful operation
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Feeds'
+        '404':
+          description: User not found
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+                    example: "User not found"
+# CRUD on blogs
+  /bloglite/blog:
+    post:
+      tags:
+        - Blogs
+      summary: Create a new blog
+      description: Creat a new blog
+      operationId: new blog
+      security:
+        - bearerAuth: []
+      requestBody: 
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                blogTitle: 
+                  type: string
+                  example: "Blog title"
+                caption:
+                  type: string
+                  example: "This is the blog caption"
+                imageUrl:
+                  type: string
+                  example: "afasjf.png"
+
+                isArchived:
+                  type: boolean
+                  example: 'true/false'
+      responses:
+        '201':
+          description:
+            Successful operation
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: "Blog Created successfully"
+        '400':
+          description:
+            Blog not created du to invalid input
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: "Provid a valid input"
+  
+  /bloglite/blog/{id}:
+    put:
+      tags:
+        - Blogs
+      summary: Update the blog
+      description: Update the blog
+      operationId: update the blog
+      parameters:
+        - name: id
+          in: path
+          required: true
+          description: "blog id"
+          schema: 
+            type: integer
+          
+      security:
+        - bearerAuth: []
+
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                blogTitle:
+                  type: string
+                  example: "new blog title"
+                caption:
+                  type: string
+                  example: "updated blog title"
+                imageUrl:
+                  type: string
+                  example: "updated blog image url"
+                isArchived:
+                  type: string
+                  example: "private/public"
+                deleteImg:
+                  type: boolean
+                  example: "true/false"
+      responses:
+        '200':
+          description:
+            Successful operation
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: "Blog updated  successfully"
+        '400':
+          description:
+            Blog not found
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: "blog not found"
+
+    delete: 
+      tags:
+        - Blogs
+      summary: Delete the blog
+      description: Delete the blog
+      operationId: delete blog
+      parameters:
+        - name: id
+          in: path
+          required: true
+          description: "blog id"
+          schema: 
+            type: integer
+          
+      security:
+        - bearerAuth: []
+      responses:
+        "200":
+          description: Blog Delete
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: "Blog deleted successfully"
+        "400":
+          description: Blog not deleted
+          content:
+            application/json:
+              schema:
+                type: object
+                properties: 
+                  message:
+                    type: string
+                    example: "Blog not found"
+
+
+  /bloglite/blog/comment/{blog_id}:
+    post:
+      tags:
+        - Comments
+      summary: comment on blog
+      description: comments on the give blog id
+      operationId: comment create
+      parameters:
+        - name: blog_id
+          in: path
+          required: true
+          description: "blog id"
+          schema: 
+            type: integer
+          
+      security:
+        - bearerAuth: []
+
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                comment:
+                  type: string
+                  example: "comment here"
+      responses:
+        '200':
+          description:
+            Successful operation
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: "Successfully commented on the blog"
+        '400':
+          description:
+            Blog not found
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: "blog not found"
+    
+  /bloglite/blog/comment/{comment_id}:
+    put:
+      tags:
+        - Comments
+      summary: update the comment
+      description: comments on the give blog id
+      operationId: update comment
+      parameters:
+        - name: comment_id
+          in: path
+          required: true
+          description: "Comment id"
+          schema: 
+            type: integer
+          
+      security:
+        - bearerAuth: []
+
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                comment:
+                  type: string
+                  example: "update comment"
+      responses:
+        '200':
+          description:
+            Successful operation
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: "Successfully commented on the blog"
+        '400':
+          description:
+            Blog not found
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: "Comment not found"
+
+    delete:
+      tags:
+        - Comments
+      summary: delete the comment
+      description: comments on the give blog id
+      operationId: delete comment
+      parameters:
+        - name: comment_id
+          in: path
+          required: true
+          description: "Comment id"
+          schema: 
+            type: integer
+          
+      security:
+        - bearerAuth: []
+
+      responses:
+        '200':
+          description:
+            Successful operation
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: "comment deleted successfully "
+        '400':
+          description:
+            Comment not found
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: "Comment not found"
+
+# Relation Api
+
+  /bloglite/relation/{username}:
+    post:
+      tags:
+        - Relations
+      summary: Follow the user
+      description: Follow the user 
+      operationId: follow the user
+      parameters:
+        - name: username
+          in: path
+          required: true
+          description: "Username"
+          schema: 
+            type: string
+          
+      security:
+        - bearerAuth: []
+      responses:
+        '200':
+          description:
+            Successful operation
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: "You are following the user"
+        '404':
+          description:
+            User not found
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: "user not found"
+
+    delete:
+      tags:
+        - Relations
+      summary: Unfollow the user
+      description: remove from followings list
+      operationId: unfollow
+      parameters:
+        - name: username
+          in: path
+          required: true
+          description: "username"
+          schema: 
+            type: string
+          
+      security:
+        - bearerAuth: []
+
+      responses:
+        '200':
+          description:
+            Successful operation
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: "user removed from you followings list "
+        '400':
+          description:
+            User not found
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: "user not found"
+
+# summary API
+
+  /bloglite/summary:
+    get:
+      tags:
+        - Summary
+      summary: summary of the user
+      description: Get the summary
+      operationId: get the users summary
+          
+      security:
+        - bearerAuth: []
+      responses:
+        '200':
+          description:
+            Successful operation
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: "Here is all the summary"
+        '404':
+          description:
+            User not found
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: "user not found"
+
+# Search API
+
+  /bloglite/search/{username}:
+    get:
+      tags:
+        - Search
+      summary: search user
+      description: Search the user by user name
+      operationId: search the user 
+      parameters:
+        - name: username
+          in: path
+          required: true
+          description: "username"
+          schema: 
+            type: string
+
+          
+      security:
+        - bearerAuth: []
+      responses:
+        '200':
+          description:
+            Successful operation
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: "here is the result"
+        '404':
+          description:
+            User not found
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: "user not found"
+
+# profile Api 
+
+  /bloglite/profile/{username}:
+    get:
+      tags:
+        - Profile
+      summary: profile section
+      description: User's profile
+      operationId: profile of the user 
+      parameters:
+        - name: username
+          in: path
+          required: true
+          description: "username"
+          schema: 
+            type: string
+
+          
+      security:
+        - bearerAuth: []
+      responses:
+        '200':
+          description:
+            Successful operation
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: "profile data"
+        '404':
+          description:
+            User not found
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: "user not found"
+
+# export API
+  /export/blog/{blogid}:
+    get:
+      tags:
+        - export Api
+      summary: Export the given blog
+      description: export data as csv format
+      operationId: export the data as csv
+      parameters:
+        - name: blogid
+          in: path
+          required: true
+          description: "blogid"
+          schema: 
+            type: integer
+
+      security:
+        - bearerAuth: []
+
+      responses:
+        '200':
+          description:
+            Successful operation
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: "data exported"
+        '404':
+          description:
+            blog not found
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: "blog not found"
+  /export/blog/status/{tokenid}:
+    get:
+      tags:
+        - export Api
+      summary: Status of the given blog
+      description: status for export
+      operationId: check the status
+      parameters:
+        - name: tokenid
+          in: path
+          required: true
+          description: "tokenid"
+          schema: 
+            type: string
+
+      security:
+        - bearerAuth: []
+
+      responses:
+        '200':
+          description:
+            Successful operation
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: "Status of export"
+        '404':
+          description:
+            status
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: "status not found"
+  
+  /bloglite/download/blog/{blogid}:
+    get:
+      tags:
+        - export Api
+      summary: Download the blog
+      description: Start downloading 
+      operationId: download
+      parameters:
+        - name: blog id
+          in: path
+          required: true
+          description: "blogid"
+          schema: 
+            type: integer
+      # produces:
+      #   - text/csv
+
+      responses:
+        '200':
+          description:
+            Successful operation
+          content:
+            application/csv:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: "downlading the blog"
+        '404':
+          description:
+            blog not found
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: "blog not found"
+  /bloglite/blog/like/{blogid}:
+    get:
+      tags:
+        - Blogs
+      summary: like the blog
+      description: liked
+      operationId: liking the blog
+      parameters:
+        - name: blog id
+          in: path
+          required: true
+          description: "blog id"
+          schema: 
+            type: integer
+      security:
+        - bearerAuth: []
+
+
+      responses:
+        '200':
+          description:
+            Successful operation
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: "blog liked"
+        '404':
+          description:
+            blog not found
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: "blog not found"
+
+  /bloglite/blog/dislike/{blogid}:
+    get:
+      tags:
+        - Blogs
+      summary: dislike the blog
+      description: disliked
+      operationId: dislike the blog
+      parameters:
+        - name: blog id
+          in: path
+          required: true
+          description: "blog id"
+          schema: 
+            type: integer
+
+      security:
+        - bearerAuth: []
+
+
+      responses:
+        '200':
+          description:
+            Successful operation
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: "blog disliked"
+        '404':
+          description:
+            blog not found
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: "blog not found"
+
+    
+
+
+    
+
+components:
+  securitySchemes:
+    bearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
+
+  schemas: 
+    User:
+      type: object
+      properties: 
+        userName:
+          type: string
+          example: Random user
+        userUsername:
+          type: string
+          example: ram123
+        userNoBlog:
+          type: integer
+          format: int64
+          example: 20
+        userNoFollowers:
+          type: integer
+          format: int64
+          example: 56
+        userNoFollowing:
+          type: integer
+          format: int64
+          example: 44
+    Feeds:
+      type: object
+      properties:
+        feeds:
+          type: string
+          example: {}
+
+          
+
+          
+
+      
+
+
+            
+                  
+
+
